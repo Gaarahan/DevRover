@@ -46,11 +46,11 @@ export default function Command() {
       // open vim
       await execCommand(
         `tmux new-session -d -s ${curName} -A`,
+        `tmux switch -t ${curName}`
       );
-      await openItermAndRun(`tmux switch -t ${curName}`,`cd ${projectPath}`, 'nvim');
+      await openItermAndRun(`cd ${projectPath}`, 'nvim');
     }
 
-    console.log(allSession, curName)
     setLoading(false);
   }
 
