@@ -12,8 +12,8 @@ export default function Command() {
     const docStr = await execCommand("ls -d ~/Documents/*/");
     const docList = docStr
       .split("\n")
-      .filter((itm) => !!itm)
-      .map((path) => ({ name: ProjectReg.exec(path)?.[0], path }));
+      .map((path) => ({ name: ProjectReg.exec(path || '')?.[0], path }))
+      .filter(itm => itm.name);
 
     setRes(docList);
   };
