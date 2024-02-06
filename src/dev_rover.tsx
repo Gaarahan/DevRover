@@ -22,7 +22,7 @@ export default function Command() {
     fetchDocList();
   }, []);
 
-  const openProject = ({ projectPath }) => {
+  const openProject = async ({ projectPath }) => {
     const toast = await showToast({
       style: Toast.Style.Animated,
       title: "Waitting",
