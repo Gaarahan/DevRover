@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { runShellCommand } from './utils/shellUtils';
 
 
-export default function DevRover() {
+export default function Command() {
   const [res, setRes] = useState<{ name: string; path: string }[]>([]);
 
   runShellCommand("va")
