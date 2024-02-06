@@ -5,11 +5,11 @@ export const runShellCommand = async (command: string): Promise<string> => {
     return new Promise((resolve, reject) => {
       exec(command, (error, stdout, stderr) => {
         if (error) {
-          reject(`error: ${error.message}`);
+          reject(`Error: ${error.message}`);
           return;
         }
         if (stderr) {
-          reject(`stderr: ${stderr}`);
+          reject(`Stderr: ${stderr}`);
           return;
         }
         resolve(stdout);
