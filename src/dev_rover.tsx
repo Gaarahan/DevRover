@@ -36,11 +36,11 @@ export default function Command() {
 
     if (allSession.includes(curName)) {
       toast.style = Toast.Style.Success;
-      toast.message = `Exist session ${sessionName} is open successfully`;
+      toast.message = `Exist session ${curName} is open successfully`;
     } else {
       // open vim
       toast.style = Toast.Style.Success;
-      toast.message = `New session ${sessionName} is setup successfully`;
+      toast.message = `New session ${curName} is setup successfully`;
     }
     console.log(allSession, curName)
   }
