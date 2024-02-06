@@ -40,13 +40,13 @@ export default function Command() {
       toast.style = Toast.Style.Success;
       toast.message = `Exist session ${curName} is open successfully`;
 
-      execCommand(`tmux switch -t ${curName}`);
+      await execCommand(`tmux switch -t ${curName}`);
     } else {
       toast.style = Toast.Style.Success;
       toast.message = `New session ${curName} is setup successfully`;
 
       // open vim
-      execCommand(`tmux new-session -t ${curName}`);
+      await execCommand(`tmux new-session -d -s ${curName} -A && open -b com.googlecode.iterm2`);
     }
 
     console.log(allSession, curName)
