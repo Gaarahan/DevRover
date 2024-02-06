@@ -1,5 +1,4 @@
 import { exec } from "child_process";
-import { Action, ActionPanel, Clipboard, Form, Icon, showToast, Toast } from "@raycast/api";
 
 const BIN_ENV = Object.assign({}, process.env, { PATH: "/bin:/usr/local/bin:/usr/bin:/opt/homebrew/bin" });
 
@@ -23,7 +22,7 @@ export async function execCommand(command: string | string[]): Promise<string> {
 export async function openItermAndRun(command: string | string[]) {
   const cmdStr = typeof command === 'string' ? command : command.join('&&');
   const cmd = `osascript
-    -e 'tell application "iTerm2"' \                                                              gaarahan@B-10RPQ05P-0308
+    -e 'tell application "iTerm2"' \
     -e '    tell current session of current tab of current window' \
     -e '        write text "${command}"' \
     -e '    end tell' \

@@ -1,7 +1,7 @@
 
 import { Action, ActionPanel, Clipboard, Form, Icon, showToast, Toast } from "@raycast/api";
 import { useEffect, useState } from "react";
-import { execCommand, getAllSession } from './utils';
+import { execCommand, getAllSession, openItermAndRun } from './utils';
 
 const ProjectReg = /\/([\w\s-_]+)\/$/;
 
@@ -45,7 +45,7 @@ export default function Command() {
 
       // open vim
       await execCommand(
-        `tmux new-session -d -s test -A`,
+        `tmux new-session -d -s ${curName} -A`,
       );
       await openItermAndRun(`cd ${projectPath}`, 'zsh -c nvim', 'tmux switch -t ${curName}');
     }
