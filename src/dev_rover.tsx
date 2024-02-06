@@ -1,7 +1,7 @@
 
 import { Action, ActionPanel, Clipboard, Form, Icon, showToast, Toast } from "@raycast/api";
 import { useEffect, useState } from "react";
-import { execCommand } from './utils';
+import { execCommand, getAllSession } from './utils';
 
 const ProjectReg = /\/([\w\s-_]+)\/$/;
 
@@ -23,20 +23,33 @@ export default function Command() {
   }, []);
 
   const openProject = ({ projectPath }) => {
+    const toast = await showToast({
+      style: Toast.Style.Animated,
+      title: "Waitting",
+    });
+
     // TODO: check if terminal open
 
     // check and switch tmux session
-    const allSession = getAllSession();
+    const allSession = getAllSession().split('\n');
     const curName = ProjectReg.exec(projectPath)?.[1];
+
+    if (allSession.includes(curName)) {
+      toast.style = Toast.Style.Success;
+      toast.message = `Exist session ${sessionName} is open successfully`;
+    } else {
+      // open vim
+      toast.style = Toast.Style.Success;
+      toast.message = `New session ${sessionName} is setup successfully`;
+    }
     console.log(allSession, curName)
-    // open vim
   }
 
   return (
     <Form
       actions={
         <ActionPanel>
-          <Action.SubmitForm title="Open In Neovim" onAction={openProject} />
+          <Action.SubmitForm title="Open In Neovim" onSubmit={openProject} />
           <Action title="Update All Repo" />
         </ActionPanel>
       }
