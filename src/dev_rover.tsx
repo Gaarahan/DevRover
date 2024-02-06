@@ -1,7 +1,7 @@
 
 import { Action, ActionPanel, Clipboard, Form, Icon, showToast, Toast } from "@raycast/api";
 import { useEffect, useState } from "react";
-import { runShellCommand } from './utils';
+import { execCommand } from './utils';
 
 const ProjectReg = /\/[\w\s]+\/$/;
 
@@ -9,7 +9,7 @@ export default function Command() {
   const [res, setRes] = useState<{ name: string; path: string }[]>([]);
 
   const fetchDocList = async () => {
-    const docStr = await runShellCommand("ls -d ~/Documents/*/");
+    const docStr = await execCommand("ls -d ~/Documents/*/");
     const docList = docStr
       .split("\n")
       .filter((itm) => !!itm)

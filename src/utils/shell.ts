@@ -1,7 +1,7 @@
 import { exec } from "child_process";
 import { Action, ActionPanel, Clipboard, Form, Icon, showToast, Toast } from "@raycast/api";
 
-export const runShellCommand = async (command: string): Promise<string> => {
+export const execCommand = async (command: string): Promise<string> => {
     return new Promise((resolve, reject) => {
       exec(command, (error, stdout, stderr) => {
         if (error) {
