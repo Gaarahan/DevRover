@@ -23,8 +23,9 @@ export async function openItermAndRun(command: string | string[]) {
   const cmdStr = typeof command === 'string' ? command : command.join('&&');
   const cmd = `osascript
     -e 'tell application "iTerm2"' \
+    -e '  activate' \
     -e '    tell current session of current tab of current window' \
-    -e '        write text "${command}"' \
+    -e '        write text "${cmdStr}"' \
     -e '    end tell' \
     -e 'end tell'`;
 
