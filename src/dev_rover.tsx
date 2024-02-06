@@ -7,6 +7,7 @@ const ProjectReg = /\/([\w\s-_]+)\/$/;
 
 export default function Command() {
   const [res, setRes] = useState<{ name: string; path: string }[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const fetchDocList = async () => {
     const docStr = await execCommand("ls -d ~/Documents/*/");
@@ -23,6 +24,7 @@ export default function Command() {
   }, []);
 
   const openProject = async ({ projectPath }) => {
+    setLoading(true);
     const toast = await showToast({
       style: Toast.Style.Animated,
       title: "Waitting",
@@ -37,16 +39,23 @@ export default function Command() {
     if (allSession.includes(curName)) {
       toast.style = Toast.Style.Success;
       toast.message = `Exist session ${curName} is open successfully`;
+
+      execCommand(`tmux switch -t ${curName}`);
     } else {
-      // open vim
       toast.style = Toast.Style.Success;
       toast.message = `New session ${curName} is setup successfully`;
+
+      // open vim
+      execCommand(`tmux new-session -t ${curName}`);
     }
+
     console.log(allSession, curName)
+    setLoading(false);
   }
 
   return (
     <Form
+      isLoading={loading}
       actions={
         <ActionPanel>
           <Action.SubmitForm title="Open In Neovim" onSubmit={openProject} />
