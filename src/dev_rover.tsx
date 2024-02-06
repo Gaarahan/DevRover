@@ -45,9 +45,9 @@ export default function Command() {
 
       // open vim
       await execCommand(
-        `tmux new-session -s test -A 'cd ${projectPath}; zsh -c nvim;'`,
-        `open -b com.googlecode.iterm2`
+        `tmux new-session -d -s test -A 'cd ${projectPath}; zsh -c nvim;'`,
       );
+      await openItermAndRun(`tmux switch -t ${curName}`)
     }
 
     console.log(allSession, curName)

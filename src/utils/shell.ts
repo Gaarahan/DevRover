@@ -3,7 +3,7 @@ import { Action, ActionPanel, Clipboard, Form, Icon, showToast, Toast } from "@r
 
 const BIN_ENV = Object.assign({}, process.env, { PATH: "/bin:/usr/local/bin:/usr/bin:/opt/homebrew/bin" });
 
-export const execCommand = async (command: string | string[]): Promise<string> => {
+export async function execCommand(command: string | string[]): Promise<string> {
   const cmd = typeof command === 'string' ? command : command.join('&&');
   return new Promise((resolve, reject) => {
     exec(cmd, { env: BIN_ENV }, (error, stdout, stderr) => {
@@ -19,3 +19,14 @@ export const execCommand = async (command: string | string[]): Promise<string> =
     });
   });
 };
+
+export async function openItermAndRun(command: string) {
+  const cmd = `osascript
+    -e 'tell application "iTerm2"' \                                                              gaarahan@B-10RPQ05P-0308
+    -e '    tell current session of current tab of current window' \
+    -e '        write text "${command}"' \
+    -e '    end tell' \
+    -e 'end tell'`;
+
+  return execCommand([`open -b com.googlecode.iterm2`, cmd]);
+}
