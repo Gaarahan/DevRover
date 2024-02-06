@@ -13,7 +13,7 @@ export default function Command() {
     const docList = docStr
       .split("\n")
       .filter((itm) => !!itm)
-      .map((path) => ({ name: ProjectReg.exec(path)[0], path }));
+      .map((path) => ({ name: ProjectReg.exec(path)?.[0], path }));
 
     setRes(docList);
   };
@@ -27,7 +27,7 @@ export default function Command() {
 
     // check and switch tmux session
     const allSession = getAllSession();
-    const curName = ProjectReg.exec(projectPath)[0];
+    const curName = ProjectReg.exec(projectPath)?.[0];
     console.log(allSession, curName)
     // open vim
   }
