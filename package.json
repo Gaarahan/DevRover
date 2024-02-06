@@ -1,6 +1,6 @@
 {
   "$schema": "https://www.raycast.com/schemas/extension.json",
-  "name": "dev_rover",
+  "name": "dev-rover",
   "title": "DevRover",
   "description": "Rover through Your Development Journey",
   "icon": "command-icon.png",
@@ -8,7 +8,7 @@
   "license": "MIT",
   "commands": [
     {
-      "name": "DevRover",
+      "name": "dev_rover",
       "title": "DevRover",
       "description": "Rover through Your Development Journey",
       "mode": "view"
