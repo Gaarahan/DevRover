@@ -20,7 +20,8 @@ export async function execCommand(command: string | string[]): Promise<string> {
   });
 };
 
-export async function openItermAndRun(command: string) {
+export async function openItermAndRun(command: string | string[]) {
+  const cmdStr = typeof command === 'string' ? command : command.join('&&');
   const cmd = `osascript
     -e 'tell application "iTerm2"' \                                                              gaarahan@B-10RPQ05P-0308
     -e '    tell current session of current tab of current window' \
