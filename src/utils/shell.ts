@@ -1,5 +1,4 @@
-import { exec } from "child_process";
-import { runAppleScript } from "run-applescript";
+import { exec, execFileSync } from "child_process";
 
 const BIN_ENV = Object.assign({}, process.env, { PATH: "/bin:/usr/local/bin:/usr/bin:/opt/homebrew/bin" });
 
@@ -26,5 +25,8 @@ export async function openItermAndRun(...command: string[]) {
     write text "${command.join(" && ")}"
   end tell
 end tell`;
-  return runAppleScript(scpt);
+  return execFileSync("osascript", ["-e", scpt], {
+    encoding: "utf8",
+    timeout: 500,
+  });
 }

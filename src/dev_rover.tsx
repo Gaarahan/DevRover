@@ -1,6 +1,13 @@
-import { Action, ActionPanel, closeMainWindow, Form, showToast, Toast } from "@raycast/api";
+import { Action, ActionPanel, closeMainWindow, Form, popToRoot, showToast, Toast } from "@raycast/api";
 import { useEffect, useState } from "react";
-import { execCommand, getAllSession, openItermAndRun } from "./utils";
+import {
+  execCommand,
+  getAllSession,
+  openItermAndRun,
+  GeneralErrorScreen,
+  isPermissionError,
+  PermissionErrorScreen,
+} from "./utils";
 
 const ProjectReg = /\/([\w\s-_]+)\/$/;
 
@@ -8,9 +15,17 @@ interface FormData {
   projectPath: string;
 }
 
+enum PageMode {
+  Normal = "Normal",
+  PermissionError = "PermissionError",
+  UnexpectError = "UnexpectError",
+}
+
 export default function Command() {
-  const [res, setRes] = useState<{ name: string; path: string }[]>([]);
+  const [pageMode, changeMode] = useState<PageMode>(PageMode.Normal);
+  const [repoList, setRepoList] = useState<{ name: string; path: string }[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   const fetchDocList = async () => {
     const docStr = await execCommand("ls -d ~/Documents/*/");
@@ -19,7 +34,7 @@ export default function Command() {
       .map((path) => ({ name: ProjectReg.exec(path || "")?.[1] || "", path }))
       .filter((itm) => itm.name);
 
-    setRes(docList);
+    setRepoList(docList);
   };
 
   useEffect(() => {
@@ -43,33 +58,54 @@ export default function Command() {
 
       await execCommand(`tmux switch -t ${curName}`);
     } else {
+      // open vim
       toast.style = Toast.Style.Success;
       toast.message = `New session ${curName} is setup successfully`;
 
-      // open vim
       await execCommand(`tmux new-session -d -s ${curName} -A`, `tmux switch -t ${curName}`);
       await openItermAndRun(`cd ${projectPath}`, "nvim");
     }
 
     setLoading(false);
-    setTimeout(async () => await closeMainWindow(), 1000);
+    await closeMainWindow();
+    await popToRoot();
+  };
+
+  const openProjectWithErrorHandler = async (data: FormData) => {
+    try {
+      return openProject(data);
+    } catch (e) {
+      console.log('catch e')
+      if (isPermissionError(e)) {
+        changeMode(PageMode.PermissionError);
+      } else {
+        changeMode(PageMode.UnexpectError);
+        setErrorMsg((e as any).toString());
+      }
+    }
   };
 
   return (
-    <Form
-      isLoading={loading}
-      actions={
-        <ActionPanel>
-          <Action.SubmitForm title="Open In Neovim" onSubmit={openProject} />
-          <Action title="Update All Repo" />
-        </ActionPanel>
-      }
-    >
-      <Form.Dropdown id="projectPath" title="Select Project" storeValue>
-        {res.map((itm) => (
-          <Form.Dropdown.Item key={itm.path} value={itm.path} title={itm.name} />
-        ))}
-      </Form.Dropdown>
-    </Form>
+    <>
+      {pageMode === PageMode.Normal && (
+        <Form
+          isLoading={loading}
+          actions={
+            <ActionPanel>
+              <Action.SubmitForm title="Open In Neovim" onSubmit={openProjectWithErrorHandler} />
+              <Action title="Update All Repo" />
+            </ActionPanel>
+          }
+        >
+          <Form.Dropdown id="projectPath" title="Select Project" storeValue>
+            {repoList.map((itm) => (
+              <Form.Dropdown.Item key={itm.path} value={itm.path} title={itm.name} />
+            ))}
+          </Form.Dropdown>
+        </Form>
+      )}
+      {pageMode === PageMode.PermissionError && <PermissionErrorScreen />}
+      {pageMode === PageMode.UnexpectError && <GeneralErrorScreen reason={errorMsg} />}
+    </>
   );
 }
