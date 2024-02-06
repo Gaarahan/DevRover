@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="68px" height="57px" viewBox="0 0 68 57" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>icon</title>
+    <defs>
+        <linearGradient x1="100%" y1="100%" x2="-2.18726046e-14%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#6E77EE" offset="0%"></stop>
+            <stop stop-color="#AEB3F4" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <polyline id="路径-2" stroke="url(#linearGradient-1)" stroke-width="6" stroke-linejoin="bevel" points="1.33072917 36.21875 3.01171875 36.21875 9.10416667 31.3984375 16.59375 27.578125 23.7109375 30.3984375 30.6895788 35.4237982 34 36.21875 37.0234624 35.511356 44.2617188 29.8547912 50.8697917 27.578125 57.3554688 29.8547912 64.3046875 35.21875 66.2513021 35.21875"></polyline>
+        <polyline id="路径-2" stroke="url(#linearGradient-1)" stroke-width="6" stroke-linejoin="bevel" points="1.33072917 51.21875 3.01171875 51.21875 9.10416667 46.3984375 16.59375 42.578125 23.7109375 45.3984375 30.6895788 50.4237982 34 51.21875 37.0234624 50.511356 44.2617188 44.8547912 50.8697917 42.578125 57.3554688 44.8547912 64.3046875 50.21875 66.2513021 50.21875"></polyline>
+        <text id="DEV" font-family="Herculanum" font-size="33" font-weight="normal" fill="#6971D6">
+            <tspan x="0" y="21">DEV</tspan>
+        </text>
+    </g>
+</svg>
