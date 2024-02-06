@@ -1,6 +1,6 @@
 {
   "$schema": "https://www.raycast.com/schemas/extension.json",
-  "name": "DevRover",
+  "name": "dev_rover",
   "title": "DevRover",
   "description": "Rover through Your Development Journey",
   "icon": "command-icon.png",
