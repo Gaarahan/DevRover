@@ -1,9 +1,12 @@
-
 import { Action, ActionPanel, closeMainWindow, Form, showToast, Toast } from "@raycast/api";
 import { useEffect, useState } from "react";
-import { execCommand, getAllSession, openItermAndRun } from './utils';
+import { execCommand, getAllSession, openItermAndRun } from "./utils";
 
 const ProjectReg = /\/([\w\s-_]+)\/$/;
+
+interface FormData {
+  projectPath: string;
+}
 
 export default function Command() {
   const [res, setRes] = useState<{ name: string; path: string }[]>([]);
@@ -11,10 +14,10 @@ export default function Command() {
 
   const fetchDocList = async () => {
     const docStr = await execCommand("ls -d ~/Documents/*/");
-    const docList = docStr
+    const docList: { name: string; path: string }[] = docStr
       .split("\n")
-      .map((path) => ({ name: ProjectReg.exec(path || '')?.[1], path }))
-      .filter(itm => itm.name);
+      .map((path) => ({ name: ProjectReg.exec(path || "")?.[1] || "", path }))
+      .filter((itm) => itm.name);
 
     setRes(docList);
   };
@@ -23,7 +26,7 @@ export default function Command() {
     fetchDocList();
   }, []);
 
-  const openProject = async ({ projectPath }) => {
+  const openProject = async ({ projectPath }: FormData) => {
     setLoading(true);
     const toast = await showToast({
       style: Toast.Style.Animated,
@@ -31,10 +34,10 @@ export default function Command() {
     });
 
     // check and switch tmux session
-    const allSession = (await getAllSession()).split('\n');
+    const allSession = (await getAllSession()).split("\n");
     const curName = ProjectReg.exec(projectPath)?.[1];
 
-    if (allSession.includes(curName)) {
+    if (allSession.includes(curName!)) {
       toast.style = Toast.Style.Success;
       toast.message = `Exist session ${curName} is open successfully`;
 
@@ -44,16 +47,13 @@ export default function Command() {
       toast.message = `New session ${curName} is setup successfully`;
 
       // open vim
-      await execCommand(
-        `tmux new-session -d -s ${curName} -A`,
-        `tmux switch -t ${curName}`
-      );
-      await openItermAndRun(`cd ${projectPath}`, 'nvim');
+      await execCommand(`tmux new-session -d -s ${curName} -A`, `tmux switch -t ${curName}`);
+      await openItermAndRun(`cd ${projectPath}`, "nvim");
     }
 
     setLoading(false);
     setTimeout(async () => await closeMainWindow(), 1000);
-  }
+  };
 
   return (
     <Form
