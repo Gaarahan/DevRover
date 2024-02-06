@@ -1,5 +1,5 @@
 
-import { Action, ActionPanel, Clipboard, Form, Icon, showToast, Toast } from "@raycast/api";
+import { Action, ActionPanel, closeMainWindow, Form, showToast, Toast } from "@raycast/api";
 import { useEffect, useState } from "react";
 import { execCommand, getAllSession, openItermAndRun } from './utils';
 
@@ -52,6 +52,7 @@ export default function Command() {
     }
 
     setLoading(false);
+    await closeMainWindow();
   }
 
   return (
