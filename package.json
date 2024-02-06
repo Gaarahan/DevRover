@@ -8,9 +8,9 @@
   "license": "MIT",
   "commands": [
     {
-      "name": "hello",
-      "title": "Hello",
-      "description": "",
+      "name": "DevRover",
+      "title": "DevRover",
+      "description": "Rover through Your Development Journey",
       "mode": "view"
     }
   ],
