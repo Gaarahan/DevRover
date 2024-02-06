@@ -31,7 +31,7 @@ export default function Command() {
     // TODO: check if terminal open
 
     // check and switch tmux session
-    const allSession = getAllSession().split('\n');
+    const allSession = (await getAllSession()).split('\n');
     const curName = ProjectReg.exec(projectPath)?.[1];
 
     if (allSession.includes(curName)) {

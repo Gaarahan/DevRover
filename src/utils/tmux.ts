@@ -1,5 +1,5 @@
 import { execCommand } from '.';
 
-export function getAllSession() {
-    return execCommand(`tmux list-sessions | awk '{print $1}' | sed 's/://'`)
+export async function getAllSession() {
+    return await execCommand(`tmux list-sessions | awk '{print $1}' | sed 's/://'`)
 }
