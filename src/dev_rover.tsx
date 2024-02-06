@@ -3,7 +3,7 @@ import { Action, ActionPanel, Clipboard, Form, Icon, showToast, Toast } from "@r
 import { useEffect, useState } from "react";
 import { execCommand } from './utils';
 
-const ProjectReg = /\/[\w\s]+\/$/;
+const ProjectReg = /\/([\w\s-_]+)\/$/;
 
 export default function Command() {
   const [res, setRes] = useState<{ name: string; path: string }[]>([]);
@@ -12,7 +12,7 @@ export default function Command() {
     const docStr = await execCommand("ls -d ~/Documents/*/");
     const docList = docStr
       .split("\n")
-      .map((path) => ({ name: ProjectReg.exec(path || '')?.[0], path }))
+      .map((path) => ({ name: ProjectReg.exec(path || '')?.[1], path }))
       .filter(itm => itm.name);
 
     setRes(docList);
@@ -27,7 +27,7 @@ export default function Command() {
 
     // check and switch tmux session
     const allSession = getAllSession();
-    const curName = ProjectReg.exec(projectPath)?.[0];
+    const curName = ProjectReg.exec(projectPath)?.[1];
     console.log(allSession, curName)
     // open vim
   }
