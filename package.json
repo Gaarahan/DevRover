@@ -1,16 +1,16 @@
 {
   "$schema": "https://www.raycast.com/schemas/extension.json",
-  "name": "hello",
-  "title": "Hello",
-  "description": "test",
-  "icon": "command-icon.png",
+  "name": "dev-rover",
+  "title": "DevRover",
+  "description": "Rover through Your Development Journey",
+  "icon": "icon.svg",
   "author": "gaarahan",
   "license": "MIT",
   "commands": [
     {
-      "name": "hello",
-      "title": "Hello",
-      "description": "",
+      "name": "dev_rover",
+      "title": "DevRover",
+      "description": "Rover through Your Development Journey",
       "mode": "view"
     }
   ],
@@ -32,5 +32,5 @@
     "lint": "ray lint",
     "publish": "npx @raycast/api@latest publish"
   },
-  "repository": "https://github.com/Gaarahan/dotfiles.git"
+  "repository": "https://github.com/Gaarahan/DevRover"
 }
