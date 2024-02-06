@@ -52,7 +52,7 @@ export default function Command() {
     }
 
     setLoading(false);
-    await closeMainWindow();
+    setTimeout(() => await closeMainWindow(), 2000);
   }
 
   return (
