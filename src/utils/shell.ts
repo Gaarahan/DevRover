@@ -27,5 +27,5 @@ export async function openItermAndRun(...command: string[]) {
     -e '    end tell' \
     -e 'end tell'`;
 
-  return execCommand([`open -b com.googlecode.iterm2`, cmd]);
+  return execCommand(`open -b com.googlecode.iterm2`, cmd);
 }
