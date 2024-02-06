@@ -30,8 +30,6 @@ export default function Command() {
       title: "Waitting",
     });
 
-    // TODO: check if terminal open
-
     // check and switch tmux session
     const allSession = (await getAllSession()).split('\n');
     const curName = ProjectReg.exec(projectPath)?.[1];
