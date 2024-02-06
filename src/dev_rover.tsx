@@ -46,7 +46,10 @@ export default function Command() {
       toast.message = `New session ${curName} is setup successfully`;
 
       // open vim
-      await execCommand(`tmux new-session -d -s ${curName} -A && open -b com.googlecode.iterm2`);
+      await execCommand(
+        `tmux new-session -s test -A 'cd ${projectPath}; zsh -c nvim;'`,
+        `open -b com.googlecode.iterm2`
+      );
     }
 
     console.log(allSession, curName)

@@ -3,9 +3,10 @@ import { Action, ActionPanel, Clipboard, Form, Icon, showToast, Toast } from "@r
 
 const BIN_ENV = Object.assign({}, process.env, { PATH: "/bin:/usr/local/bin:/usr/bin:/opt/homebrew/bin" });
 
-export const execCommand = async (command: string): Promise<string> => {
+export const execCommand = async (command: string | string[]): Promise<string> => {
+  const cmd = typeof command === 'string' ? command : command.join('&&');
   return new Promise((resolve, reject) => {
-    exec(command, { env: BIN_ENV }, (error, stdout, stderr) => {
+    exec(cmd, { env: BIN_ENV }, (error, stdout, stderr) => {
       if (error) {
         reject(`Error: ${error.message}`);
         return;
