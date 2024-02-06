@@ -3,7 +3,7 @@
   "name": "dev-rover",
   "title": "DevRover",
   "description": "Rover through Your Development Journey",
-  "icon": "command-icon.png",
+  "icon": "icon.svg",
   "author": "gaarahan",
   "license": "MIT",
   "commands": [
