@@ -47,7 +47,7 @@ export default function Command() {
       await execCommand(
         `tmux new-session -d -s ${curName} -A`,
       );
-      await openItermAndRun(`cd ${projectPath}`, 'zsh -c nvim', 'tmux switch -t ${curName}');
+      await openItermAndRun(`tmux switch -t ${curName}`,`cd ${projectPath}`, 'nvim');
     }
 
     console.log(allSession, curName)
