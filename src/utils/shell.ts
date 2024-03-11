@@ -19,13 +19,13 @@ export async function execCommand(...command: string[]): Promise<string> {
 };
 
 export async function openItermAndRun(...command: string[]) {
-  const cmd = `osascript
-    -e 'tell application "iTerm2"' \
-    -e '  activate' \
-    -e '    tell current session of current tab of current window' \
-    -e '        write text "${command.join('&&')}"' \
-    -e '    end tell' \
-    -e 'end tell'`;
+  // const cmd = `osascript
+  //   -e 'tell application "iTerm2"' \
+  //   -e '  activate' \
+  //   -e '    tell current session of current tab of current window' \
+  //   -e '        write text "${command.join('&&')}"' \
+  //   -e '    end tell' \
+  //   -e 'end tell'`;
 
-  return execCommand(`open -b com.googlecode.iterm2`, cmd);
+  // return execCommand(`open -b com.googlecode.iterm2`, cmd);
 }

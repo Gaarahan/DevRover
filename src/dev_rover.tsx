@@ -61,7 +61,7 @@ export default function Command() {
       actions={
         <ActionPanel>
           <Action.SubmitForm title="Open In Neovim" onSubmit={openProject} />
-          <Action title="Update All Repo" />
+          <Action title="[WIP]Update All Repo" />
         </ActionPanel>
       }
     >
