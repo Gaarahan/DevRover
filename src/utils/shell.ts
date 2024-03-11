@@ -1,5 +1,4 @@
-import { exec } from "child_process";
-import { execFileAsync } from 'fs';
+import { exec, execFileSync } from "child_process";
 
 const BIN_ENV = Object.assign({}, process.env, { PATH: "/bin:/usr/local/bin:/usr/bin:/opt/homebrew/bin" });
 
@@ -30,5 +29,5 @@ export async function openItermAndRun(...command: string[]) {
 
   await execCommand(`open -b com.googlecode.iterm2`);
 
-  return await execFileAsync('osascript', ['-e', cmd])
+  return await execFileSync('osascript', ['-e', cmd])
 }
