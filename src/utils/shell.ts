@@ -1,10 +1,11 @@
 import { exec } from "child_process";
+import { execFileAsync } from 'fs';
 
 const BIN_ENV = Object.assign({}, process.env, { PATH: "/bin:/usr/local/bin:/usr/bin:/opt/homebrew/bin" });
 
 export async function execCommand(...command: string[]): Promise<string> {
   return new Promise((resolve, reject) => {
-    exec(command.join('&&'), { env: BIN_ENV }, (error, stdout, stderr) => {
+    exec(command.join(' && '), { env: BIN_ENV }, (error, stdout, stderr) => {
       if (error) {
         reject(`Error: ${error.message}`);
         return;
@@ -19,13 +20,15 @@ export async function execCommand(...command: string[]): Promise<string> {
 };
 
 export async function openItermAndRun(...command: string[]) {
-  // const cmd = `osascript
-  //   -e 'tell application "iTerm2"' \
-  //   -e '  activate' \
-  //   -e '    tell current session of current tab of current window' \
-  //   -e '        write text "${command.join('&&')}"' \
-  //   -e '    end tell' \
-  //   -e 'end tell'`;
+  const cmd = `
+  tell application "iTerm" 
+	  activate
+	    tell current session of current tab of current window
+        ${command.map(str => `write text "${str}"`).join('\n')}
+	    end tell
+  end tell`;
 
-  // return execCommand(`open -b com.googlecode.iterm2`, cmd);
+  await execCommand(`open -b com.googlecode.iterm2`);
+
+  return await execFileAsync('osascript', ['-e', cmd])
 }
