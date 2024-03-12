@@ -1,7 +1,7 @@
-import { Action, ActionPanel, closeMainWindow, Form, showToast, Toast } from "@raycast/api";
+import { Action, ActionPanel, closeMainWindow, Form, open, showToast, Toast } from "@raycast/api";
 import { useEffect, useState } from "react";
 import { execCommand, getAllSession, openItermAndRun } from "../utils";
-import { ErrorScreen, ErrorType } from "./error";
+import { ErrorType } from "./error";
 
 const ProjectReg = /\/([\w\s-_]+)\/$/;
 
@@ -10,16 +10,16 @@ interface IFormData {
 }
 
 type ErrorInfo = {
-    type: ErrorType; 
-    errorMsg?: string
-}
+  type: ErrorType;
+  errorMsg?: string;
+};
 
 export interface IProps {
-    onError: (e: ErrorInfo) => void;
+  onError: (e: ErrorInfo) => void;
 }
 
-export default function Home() {
-    const { onError } = this.props;
+export function Home(props: IProps) {
+  const { onError } = props;
   const [res, setRes] = useState<{ name: string; path: string }[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -53,18 +53,24 @@ export default function Home() {
         toast.style = Toast.Style.Success;
         toast.message = `Exist session ${curName} is open successfully`;
 
-        await execCommand(`tmux switch -t ${curName}`);
+        await openItermAndRun(`tmux switch -t ${curName}`);
       } else {
         toast.style = Toast.Style.Success;
         toast.message = `New session ${curName} is setup successfully`;
 
         // open vim
-        await execCommand(`tmux new-session -d -s ${curName} -A`, `tmux switch -t ${curName}`);
-        await openItermAndRun(`cd ${projectPath}`, "nvim");
+        await openItermAndRun(
+          `tmux new-session -d -s ${curName} -A`,
+          `tmux switch -t ${curName}`,
+        );
+        await openItermAndRun(
+          `cd ${projectPath}`,
+          "nvim",
+        )
       }
       setTimeout(async () => await closeMainWindow(), 1000);
     } catch (e: any) {
-      if (e.stderr.includes("-1743")) {
+      if (e.stderr?.includes?.("-1743")) {
         onError({ type: ErrorType.PERMISSION });
       } else {
         onError({ type: ErrorType.GENERAL, errorMsg: e.toString() });
