@@ -1,21 +1,22 @@
-// https://github.com/raycast/extensions/blob/main/extensions/iterm/src/core/permission-error-screen.tsx
-
 import { Action, ActionPanel, Detail, environment, Icon } from "@raycast/api";
-import path from "path";
-import fileUrl from "file-url";
+
+export enum ErrorType {
+    PERMISSION = 'PERMISSION',
+    GENERAL = 'GENERAL'
+}
 
 const OpenFullDiskAccessPreferencePaneAction = () => (
-  <Action.Open
-    title="Open System Preferences"
-    icon={Icon.Gear}
-    target="x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles"
-  />
+    <Action.Open
+        title="Open System Preferences"
+        icon={Icon.Gear}
+        target="x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles"
+    />
 );
 
 const Actions = () => (
-  <ActionPanel>
-    <OpenFullDiskAccessPreferencePaneAction />
-  </ActionPanel>
+    <ActionPanel>
+        <OpenFullDiskAccessPreferencePaneAction />
+    </ActionPanel>
 );
 
 const permissionErrorMarkdown = `## Raycast needs automation access to iTerm.
@@ -28,11 +29,11 @@ const permissionErrorMarkdown = `## Raycast needs automation access to iTerm.
 1. When prompted enter your password
 `;
 
-export const isPermissionError = (reason: string) =>
-  reason.indexOf(`Command failed with exit code 1: osascript -e`) !== -1;
+export const PermissionErrorScreen = (props: { type: ErrorType, errorMsg: string }) => {
+    if (props.type === ErrorType.PERMISSION) {
+        return <Detail markdown={permissionErrorMarkdown} navigationTitle={"Permission Issue with Raycast"} actions={<Actions />} />
+    } else {
+        return <Detail markdown={`Unknown error: ${props.errorMsg}`} />
+    }
 
-export const PermissionErrorScreen = () => (
-  <Detail markdown={permissionErrorMarkdown} navigationTitle={"Permission Issue with Raycast"} actions={<Actions />} />
-);
-
-export const GeneralErrorScreen = ({ reason }: { reason: string }) => <Detail markdown={`Unknown error: ${reason}`} />;
+};
