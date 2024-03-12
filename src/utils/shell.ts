@@ -4,7 +4,7 @@ const BIN_ENV = Object.assign({}, process.env, { PATH: "/bin:/usr/local/bin:/usr
 
 export async function execCommand(...command: string[]): Promise<string> {
   return new Promise((resolve, reject) => {
-    exec(command.join(' && '), { env: BIN_ENV }, (error, stdout, stderr) => {
+    exec(command.join(" && "), { env: BIN_ENV }, (error, stdout, stderr) => {
       if (error) {
         reject(`Error: ${error.message}`);
         return;
@@ -16,17 +16,17 @@ export async function execCommand(...command: string[]): Promise<string> {
       resolve(stdout);
     });
   });
-};
+}
 
 export async function openItermAndRun(...command: string[]) {
   const cmd = `
   tell application "iTerm" 
 	  activate
 	    tell current session of current tab of current window
-        ${command.map(str => `write text "${str}"`).join('\n')}
+        ${command.map((str) => `write text "${str}"`).join("\n")}
 	    end tell
   end tell`;
 
   await execCommand(`open -b com.googlecode.iterm2`);
-  return execFileSync('osascript', ['-e', cmd])
+  return execFileSync("osascript", ["-e", cmd]);
 }

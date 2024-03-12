@@ -1,8 +1,7 @@
-
 import { Action, ActionPanel, closeMainWindow, Form, showToast, Toast } from "@raycast/api";
 import { useEffect, useState } from "react";
-import { execCommand, getAllSession, openItermAndRun } from './utils';
-import { ErrorType } from './page/error.tsx'
+import { execCommand, getAllSession, openItermAndRun } from "./utils";
+import { ErrorScreen, ErrorType } from "./pages/error";
 
 const ProjectReg = /\/([\w\s-_]+)\/$/;
 
@@ -13,14 +12,14 @@ interface IFormData {
 export default function Command() {
   const [res, setRes] = useState<{ name: string; path: string }[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [errorInfo, changeErrorInfo] = useState<{ type?: string, errorMsg?: string }>({})
+  const [errorInfo, changeErrorInfo] = useState<{ type?: string; errorMsg?: string }>({});
 
   const fetchDocList = async () => {
     const docStr = await execCommand("ls -d ~/Documents/*/");
     const docList = docStr
       .split("\n")
-      .map((path) => ({ name: ProjectReg.exec(path || '')?.[1], path }))
-      .filter(itm => !!itm.name) as { name: string, path: string }[];
+      .map((path) => ({ name: ProjectReg.exec(path || "")?.[1], path }))
+      .filter((itm) => !!itm.name) as { name: string; path: string }[];
 
     setRes(docList);
   };
@@ -38,7 +37,7 @@ export default function Command() {
       });
 
       // check and switch tmux session
-      const allSession = (await getAllSession()).split('\n');
+      const allSession = (await getAllSession()).split("\n");
       const curName = ProjectReg.exec(projectPath)?.[1];
 
       if (curName && allSession.includes(curName)) {
@@ -51,25 +50,22 @@ export default function Command() {
         toast.message = `New session ${curName} is setup successfully`;
 
         // open vim
-        await execCommand(
-          `tmux new-session -d -s ${curName} -A`,
-          `tmux switch -t ${curName}`
-        );
-        await openItermAndRun(`cd ${projectPath}`, 'nvim');
+        await execCommand(`tmux new-session -d -s ${curName} -A`, `tmux switch -t ${curName}`);
+        await openItermAndRun(`cd ${projectPath}`, "nvim");
       }
-    } catch (e: Error) {
-      if (e.stderr.includes('-1743')) {
-        changeErrorInfo({ type: ErrorType.PERMISSION })
+    } catch (e: any) {
+      if (e.stderr.includes("-1743")) {
+        changeErrorInfo({ type: ErrorType.PERMISSION });
       } else {
-        changeErrorInfo({ type: ErrorType.GENERAL, errorMsg: e.toString() })
+        changeErrorInfo({ type: ErrorType.GENERAL, errorMsg: e.toString() });
       }
     }
 
     setLoading(false);
     setTimeout(async () => await closeMainWindow(), 1000);
-  }
+  };
 
-  return (errorInfo.type ?
+  return errorInfo.type ? (
     <Form
       isLoading={loading}
       actions={
@@ -85,6 +81,7 @@ export default function Command() {
         ))}
       </Form.Dropdown>
     </Form>
-    : ErrorScreen
+  ) : (
+    ErrorScreen
   );
 }
