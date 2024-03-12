@@ -28,6 +28,5 @@ export async function openItermAndRun(...command: string[]) {
   end tell`;
 
   await execCommand(`open -b com.googlecode.iterm2`);
-
-  return await execFileSync('osascript', ['-e', cmd])
+  return execFileSync('osascript', ['-e', cmd])
 }

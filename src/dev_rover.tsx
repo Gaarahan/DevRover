@@ -8,6 +8,7 @@ const ProjectReg = /\/([\w\s-_]+)\/$/;
 export default function Command() {
   const [res, setRes] = useState<{ name: string; path: string }[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [ hasError, ]
 
   const fetchDocList = async () => {
     const docStr = await execCommand("ls -d ~/Documents/*/");
