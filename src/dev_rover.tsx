@@ -2,20 +2,25 @@
 import { Action, ActionPanel, closeMainWindow, Form, showToast, Toast } from "@raycast/api";
 import { useEffect, useState } from "react";
 import { execCommand, getAllSession, openItermAndRun } from './utils';
+import { ErrorType } from './page/error.tsx'
 
 const ProjectReg = /\/([\w\s-_]+)\/$/;
+
+interface IFormData {
+  projectPath: string;
+}
 
 export default function Command() {
   const [res, setRes] = useState<{ name: string; path: string }[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [ hasError, ]
+  const [errorInfo, changeErrorInfo] = useState<{ type?: string, errorMsg?: string }>({})
 
   const fetchDocList = async () => {
     const docStr = await execCommand("ls -d ~/Documents/*/");
     const docList = docStr
       .split("\n")
       .map((path) => ({ name: ProjectReg.exec(path || '')?.[1], path }))
-      .filter(itm => itm.name);
+      .filter(itm => !!itm.name) as { name: string, path: string }[];
 
     setRes(docList);
   };
@@ -24,39 +29,47 @@ export default function Command() {
     fetchDocList();
   }, []);
 
-  const openProject = async ({ projectPath }) => {
+  const openProject = async ({ projectPath }: IFormData) => {
     setLoading(true);
-    const toast = await showToast({
-      style: Toast.Style.Animated,
-      title: "Waitting",
-    });
+    try {
+      const toast = await showToast({
+        style: Toast.Style.Animated,
+        title: "Waitting",
+      });
 
-    // check and switch tmux session
-    const allSession = (await getAllSession()).split('\n');
-    const curName = ProjectReg.exec(projectPath)?.[1];
+      // check and switch tmux session
+      const allSession = (await getAllSession()).split('\n');
+      const curName = ProjectReg.exec(projectPath)?.[1];
 
-    if (allSession.includes(curName)) {
-      toast.style = Toast.Style.Success;
-      toast.message = `Exist session ${curName} is open successfully`;
+      if (curName && allSession.includes(curName)) {
+        toast.style = Toast.Style.Success;
+        toast.message = `Exist session ${curName} is open successfully`;
 
-      await execCommand(`tmux switch -t ${curName}`);
-    } else {
-      toast.style = Toast.Style.Success;
-      toast.message = `New session ${curName} is setup successfully`;
+        await execCommand(`tmux switch -t ${curName}`);
+      } else {
+        toast.style = Toast.Style.Success;
+        toast.message = `New session ${curName} is setup successfully`;
 
-      // open vim
-      await execCommand(
-        `tmux new-session -d -s ${curName} -A`,
-        `tmux switch -t ${curName}`
-      );
-      await openItermAndRun(`cd ${projectPath}`, 'nvim');
+        // open vim
+        await execCommand(
+          `tmux new-session -d -s ${curName} -A`,
+          `tmux switch -t ${curName}`
+        );
+        await openItermAndRun(`cd ${projectPath}`, 'nvim');
+      }
+    } catch (e: Error) {
+      if (e.stderr.includes('-1743')) {
+        changeErrorInfo({ type: ErrorType.PERMISSION })
+      } else {
+        changeErrorInfo({ type: ErrorType.GENERAL, errorMsg: e.toString() })
+      }
     }
 
     setLoading(false);
     setTimeout(async () => await closeMainWindow(), 1000);
   }
 
-  return (
+  return (errorInfo.type ?
     <Form
       isLoading={loading}
       actions={
@@ -72,5 +85,6 @@ export default function Command() {
         ))}
       </Form.Dropdown>
     </Form>
+    : ErrorScreen
   );
 }

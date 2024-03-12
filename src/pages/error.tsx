@@ -29,7 +29,7 @@ const permissionErrorMarkdown = `## Raycast needs automation access to iTerm.
 1. When prompted enter your password
 `;
 
-export const PermissionErrorScreen = (props: { type: ErrorType, errorMsg: string }) => {
+export const ErrorScreen = (props: { type: ErrorType, errorMsg: string }) => {
     if (props.type === ErrorType.PERMISSION) {
         return <Detail markdown={permissionErrorMarkdown} navigationTitle={"Permission Issue with Raycast"} actions={<Actions />} />
     } else {
