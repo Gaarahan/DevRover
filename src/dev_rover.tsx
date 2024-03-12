@@ -53,6 +53,7 @@ export default function Command() {
         await execCommand(`tmux new-session -d -s ${curName} -A`, `tmux switch -t ${curName}`);
         await openItermAndRun(`cd ${projectPath}`, "nvim");
       }
+      setTimeout(async () => await closeMainWindow(), 1000);
     } catch (e: any) {
       if (e.stderr.includes("-1743")) {
         changeErrorInfo({ type: ErrorType.PERMISSION });
@@ -62,7 +63,6 @@ export default function Command() {
     }
 
     setLoading(false);
-    setTimeout(async () => await closeMainWindow(), 1000);
   };
 
   return errorInfo?.type ? (
