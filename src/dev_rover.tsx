@@ -12,7 +12,7 @@ interface IFormData {
 export default function Command() {
   const [res, setRes] = useState<{ name: string; path: string }[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [errorInfo, changeErrorInfo] = useState<{ type?: string; errorMsg?: string }>({});
+  const [errorInfo, changeErrorInfo] = useState<{ type: ErrorType; errorMsg?: string } | undefined>();
 
   const fetchDocList = async () => {
     const docStr = await execCommand("ls -d ~/Documents/*/");
@@ -65,7 +65,9 @@ export default function Command() {
     setTimeout(async () => await closeMainWindow(), 1000);
   };
 
-  return errorInfo.type ? (
+  return errorInfo?.type ? (
+    <ErrorScreen type={errorInfo.type} errorMsg={errorInfo.errorMsg} />
+  ) : (
     <Form
       isLoading={loading}
       actions={
@@ -81,7 +83,5 @@ export default function Command() {
         ))}
       </Form.Dropdown>
     </Form>
-  ) : (
-    ErrorScreen
   );
 }
