@@ -1,4 +1,11 @@
-import { Action, ActionPanel, closeMainWindow, Form, open, showToast, Toast } from "@raycast/api";
+import {
+  Action,
+  ActionPanel,
+  closeMainWindow,
+  Form,
+  showToast,
+  Toast,
+} from "@raycast/api";
 import { useEffect, useState } from "react";
 import { execCommand, getAllSession, openItermAndRun } from "../utils";
 import { ErrorType } from "./error";
@@ -16,10 +23,11 @@ type ErrorInfo = {
 
 export interface IProps {
   onError: (e: ErrorInfo) => void;
+  jumpToConfig: () => void;
 }
 
 export function Home(props: IProps) {
-  const { onError } = props;
+  const { onError, jumpToConfig } = props;
   const [res, setRes] = useState<{ name: string; path: string }[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -63,10 +71,7 @@ export function Home(props: IProps) {
           `tmux new-session -d -s ${curName} -A`,
           `tmux switch -t ${curName}`,
         );
-        await openItermAndRun(
-          `cd ${projectPath}`,
-          "nvim",
-        )
+        await openItermAndRun(`cd ${projectPath}`, "nvim");
       }
       setTimeout(async () => await closeMainWindow(), 1000);
     } catch (e: any) {
@@ -86,13 +91,21 @@ export function Home(props: IProps) {
       actions={
         <ActionPanel>
           <Action.SubmitForm title="Open In Neovim" onSubmit={openProject} />
+          <Action
+            title="Change project config"
+            onAction={jumpToConfig}
+          ></Action>
           <Action title="[WIP]Update All Repo" />
         </ActionPanel>
       }
     >
       <Form.Dropdown id="projectPath" title="Select Project" storeValue>
         {res.map((itm) => (
-          <Form.Dropdown.Item key={itm.path} value={itm.path} title={itm.name} />
+          <Form.Dropdown.Item
+            key={itm.path}
+            value={itm.path}
+            title={itm.name}
+          />
         ))}
       </Form.Dropdown>
     </Form>
