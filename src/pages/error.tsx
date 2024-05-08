@@ -1,4 +1,4 @@
-import { Action, ActionPanel, Detail, environment, Icon } from "@raycast/api";
+import { Action, ActionPanel, Detail, Icon } from "@raycast/api";
 
 export enum ErrorType {
     PERMISSION = 'PERMISSION',
@@ -29,7 +29,7 @@ const permissionErrorMarkdown = `## Raycast needs automation access to iTerm.
 1. When prompted enter your password
 `;
 
-export const ErrorScreen = (props: { type: ErrorType, errorMsg: string }) => {
+export const ErrorScreen = (props: { type: ErrorType, errorMsg?: string }) => {
     if (props.type === ErrorType.PERMISSION) {
         return <Detail markdown={permissionErrorMarkdown} navigationTitle={"Permission Issue with Raycast"} actions={<Actions />} />
     } else {
