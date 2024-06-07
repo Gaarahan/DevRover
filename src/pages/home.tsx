@@ -135,9 +135,9 @@ export function Home(props: IProps) {
           ))}
         </Form.Dropdown>
       </Form>
-        {updateTasks.length ? (
-          <Detail markdown={JSON.stringify(updateTasks)}></Detail>
-        ) : null}
+      {updateTasks.length ? (
+        <Detail markdown={JSON.stringify(updateTasks)}></Detail>
+      ) : null}
     </>
   );
 }

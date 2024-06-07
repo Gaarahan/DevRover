@@ -1,10 +1,9 @@
-import child_process from "node:child_process";
+import child_process, { execFileSync } from "node:child_process";
 import fs from "node:fs/promises";
 import { promisify } from "node:util";
 import path from "path";
 
 const exec = promisify(child_process.exec);
-const execFileSync = promisify(child_process.execFileSync);
 
 const BIN_ENV = Object.assign({}, process.env, {
   PATH: "/bin:/usr/local/bin:/usr/bin:/opt/homebrew/bin",
@@ -23,13 +22,13 @@ export async function openItermAndRun(...command: string[]) {
   const cmd = `
   tell application "iTerm" 
 	  activate
-	    tell current session of current tab of current window
-        ${command.map((str) => `write text "${str}"`).join("\n")}
-	    end tell
+    tell current session of current tab of current window
+      ${command.map((str) => `write text "${str}"`).join("\n")}
+    end tell
   end tell`;
 
   await execCommand(`open -b com.googlecode.iterm2`);
-  await execFileSync(`osascript -e ${cmd}`);
+  execFileSync("osascript", ["-e", cmd]);
 }
 
 export type IUpdateRes = {

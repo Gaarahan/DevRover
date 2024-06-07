@@ -13,12 +13,12 @@ export default function Command() {
   const [errorInfo, changeErrorInfo] = useState<
     { type: ErrorType; errorMsg?: string } | undefined
   >();
+  const [page, changePage] = useState<PageEnum>(PageEnum.HOME);
 
   if (errorInfo?.type) {
     return <ErrorScreen type={errorInfo.type} errorMsg={errorInfo.errorMsg} />;
   }
 
-  const [page, changePage] = useState<PageEnum>(PageEnum.HOME);
   switch (page) {
     case "HOME":
       return (
