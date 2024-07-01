@@ -2,8 +2,9 @@ import { useState } from "react";
 import { ErrorScreen, ErrorType } from "./pages/error";
 import { Home } from "./pages/home";
 import { ProjectConfig } from "./pages/projectConfig";
+import { CloneMan } from "./pages/cloneMan";
 
-enum PageEnum {
+export enum PageEnum {
   HOME = "HOME",
   CONFIG = "CONFIG",
   CLONE_MAN = "CLONE_MAN",
@@ -20,14 +21,16 @@ export default function Command() {
   }
 
   switch (page) {
-    case "HOME":
+    case PageEnum.HOME:
       return (
         <Home
           onError={changeErrorInfo}
-          jumpToConfig={() => changePage(PageEnum.CONFIG)}
+          jumpToPage={changePage}
         ></Home>
       );
-    case "CONFIG":
-      return <ProjectConfig jumpToHome={() => changePage(PageEnum.HOME)} />;
+    case PageEnum.CONFIG:
+      return <ProjectConfig jumpToPage={changePage} />;
+    case PageEnum.CLONE_MAN:
+      return <CloneMan jumpToPage={changePage} />;
   }
 }

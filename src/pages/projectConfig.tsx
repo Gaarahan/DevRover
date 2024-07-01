@@ -1,18 +1,21 @@
 import { Action, ActionPanel, Form, Toast, showToast } from "@raycast/api";
 import path from "node:path";
+import { PageEnum } from "../dev_rover";
 
 type projectConfig = {
   homePath: string;
 };
 
-const defaultConfig: projectConfig = { homePath: path.join(process.env.HOME!, 'Documents/') };
+const defaultConfig: projectConfig = {
+  homePath: path.join(process.env.HOME!, "Documents/"),
+};
 let config = { ...defaultConfig };
 
 interface IProps {
-  jumpToHome: () => void;
+  jumpToPage: (p: PageEnum) => void;
 }
 
-export function ProjectConfig({ jumpToHome }: IProps) {
+export function ProjectConfig({ jumpToPage }: IProps) {
   const changeConfig = async (conf: projectConfig) => {
     config = conf;
 
@@ -26,10 +29,14 @@ export function ProjectConfig({ jumpToHome }: IProps) {
   };
   return (
     <Form
+      navigationTitle="Perference"
       actions={
         <ActionPanel>
           <Action.SubmitForm title="Change Config" onSubmit={changeConfig} />
-          <Action title="Back To Home" onAction={jumpToHome} />
+          <Action
+            title="Back To Home"
+            onAction={() => jumpToPage(PageEnum.HOME)}
+          />
         </ActionPanel>
       }
     >

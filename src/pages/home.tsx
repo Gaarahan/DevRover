@@ -17,6 +17,7 @@ import {
 } from "../utils";
 import { ErrorType } from "./error";
 import { getConfig } from "./projectConfig";
+import { PageEnum } from "../dev_rover";
 
 const ProjectReg = /\/([\w\s-_]+)\/$/;
 
@@ -31,11 +32,11 @@ type ErrorInfo = {
 
 export interface IProps {
   onError: (e: ErrorInfo) => void;
-  jumpToConfig: () => void;
+  jumpToPage: (p: PageEnum) => void;
 }
 
 export function Home(props: IProps) {
-  const { onError, jumpToConfig } = props;
+  const { onError, jumpToPage } = props;
   const [res, setRes] = useState<{ name: string; path: string }[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [updateTasks, changeTask] = useState<
@@ -115,13 +116,14 @@ export function Home(props: IProps) {
   return (
     <>
       <Form
+        navigationTitle="Rover Through Your Development Journey"
         isLoading={loading}
         actions={
           <ActionPanel>
             <Action.SubmitForm title="Open In Neovim" onSubmit={openProject} />
             <Action
               title="Change Project Config"
-              onAction={jumpToConfig}
+              onAction={() => jumpToPage(PageEnum.CONFIG)}
             ></Action>
             <Action title="Update All Repo" onAction={updateAllRepo} />
           </ActionPanel>
