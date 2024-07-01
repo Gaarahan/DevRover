@@ -82,9 +82,11 @@ export function Home(props: IProps) {
         toast.message = `New session ${curName} is setup successfully`;
 
         // open vim
-        await execCommand(`tmux new-session -d -s ${curName} -A`);
+        await execCommand(
+          `tmux new-session -d -s ${curName} -A -c ${projectPath}`,
+        );
         await execCommand(`tmux switch -t ${curName}`);
-        await openItermAndRun(`cd ${projectPath}`, "nvim");
+        await openItermAndRun("nvim");
       }
       setTimeout(async () => await closeMainWindow(), 1000);
     } catch (e: any) {
