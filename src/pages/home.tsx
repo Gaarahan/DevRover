@@ -2,7 +2,6 @@ import {
   Action,
   ActionPanel,
   closeMainWindow,
-  Detail,
   Form,
   showToast,
   Toast,
@@ -12,8 +11,6 @@ import {
   execCommand,
   getAllSession,
   openItermAndRun,
-  getUpdateTasksByPath,
-  IUpdateRes,
 } from "../utils";
 import { ErrorType } from "./error";
 import { getConfig } from "./projectConfig";
@@ -39,13 +36,6 @@ export function Home(props: IProps) {
   const { onError, jumpToPage } = props;
   const [res, setRes] = useState<{ name: string; path: string }[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [updateTasks, changeTask] = useState<
-    {
-      taskName: string;
-      isMasterBranch: boolean;
-      task: Promise<IUpdateRes>;
-    }[]
-  >([]);
 
   const fetchDocList = async () => {
     const docStr = await execCommand("ls -d ~/Documents/*/");
@@ -101,18 +91,6 @@ export function Home(props: IProps) {
     setLoading(false);
   };
 
-  const updateAllRepo = async () => {
-    const homePath = getConfig("homePath");
-    const tasks = await getUpdateTasksByPath(homePath);
-    // TODO
-    const updateTasks = tasks.map(({ path, isMasterBranch, runner }) => ({
-      taskName: path,
-      isMasterBranch,
-      task: runner as any,
-    }));
-    changeTask(updateTasks);
-  };
-
   return (
     <>
       <Form
@@ -125,10 +103,17 @@ export function Home(props: IProps) {
               title="Change Project Config"
               onAction={() => jumpToPage(PageEnum.CONFIG)}
             ></Action>
-            <Action title="Update All Repo" onAction={updateAllRepo} />
+            <Action
+              title="Update All Repo"
+              onAction={() => jumpToPage(PageEnum.CLONE_MAN)}
+            />
           </ActionPanel>
         }
       >
+        <Form.Description
+          title="Search git repo from"
+          text={getConfig("homePath")}
+        />
         <Form.Dropdown id="projectPath" title="Select Project" storeValue>
           {res.map((itm) => (
             <Form.Dropdown.Item
@@ -139,9 +124,6 @@ export function Home(props: IProps) {
           ))}
         </Form.Dropdown>
       </Form>
-      {updateTasks.length ? (
-        <Detail markdown={JSON.stringify(updateTasks)}></Detail>
-      ) : null}
     </>
   );
 }

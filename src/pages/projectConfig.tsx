@@ -42,7 +42,7 @@ export function ProjectConfig({ jumpToPage }: IProps) {
     >
       <Form.TextField
         id="homePath"
-        title="Select Project"
+        title="Search Project From"
         storeValue
         defaultValue={config.homePath}
       />
