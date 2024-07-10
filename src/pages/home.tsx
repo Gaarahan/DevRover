@@ -1,4 +1,4 @@
-import {
+{
   Action,
   ActionPanel,
   closeMainWindow,
@@ -38,7 +38,8 @@ export function Home(props: IProps) {
   const [loading, setLoading] = useState<boolean>(false);
 
   const fetchDocList = async () => {
-    const docStr = await execCommand("ls -d ~/Documents/*/");
+    const homePath = getConfig('homePath')
+    const docStr = await execCommand(`ls -d ${homePath}/*/`);
     const docList = docStr
       .split("\n")
       .map((path) => ({ name: ProjectReg.exec(path || "")?.[1], path }))

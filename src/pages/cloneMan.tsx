@@ -1,44 +1,78 @@
 import { Action, ActionPanel, Detail } from "@raycast/api";
 import { PageEnum } from "../dev_rover";
-import { IUpdateRes, getUpdateTasksByPath } from "../utils";
+import { IUpdateRes, IUpdateTask, getUpdateTasksByPath } from "../utils";
 import { getConfig } from "./projectConfig";
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 interface IProps {
   jumpToPage: (p: PageEnum) => void;
 }
-const pageTitle = '### UPDATE REPO'
+const pageTitle = "### UPDATE REPO";
+const operateTip = `
+1. Use \`Enter\` to start update all **master** repo
+
+1. Use \`Cmd\` + \`Enter\` to start update all repo
+`;
 const initPage = `
 ${pageTitle}
-
-Use \`Cmd\` + \`Enter\` to start
+${operateTip}
+Repo list initializing...
 `;
 
 export function CloneMan({ jumpToPage }: IProps) {
-  const [updateTasks, changeTask] = useState<
-    {
-      taskName: string;
-      isMasterBranch: boolean;
-      task: Promise<IUpdateRes>;
-    }[]
-  >([]);
+  const [updateTasks, changeTask] = useState<IUpdateTask[]>([]);
+  const [pendingTask, changPendingTask] = useState<Promise<
+    IUpdateRes[]
+  > | null>();
+  const [markdownPage, changeMarkdownPage] = useState<string>(initPage);
 
-  const markdownPage = useMemo(() => {
-    if (!updateTasks.length) return initPage;
-
-    return updateTasks.map(({taskName, isMasterBranch}) => `- **${taskName}** - ${isMasterBranch ? '\'master\'}`)
-  }, [updateTasks]);
-
-  const updateAllRepo = async () => {
+  const getAllUpdateList = async () => {
     const homePath = getConfig("homePath");
     const tasks = await getUpdateTasksByPath(homePath);
-    // TODO
-    const updateTasks = tasks.map(({ path, isMasterBranch, runner }) => ({
-      taskName: path,
-      isMasterBranch,
-      task: runner as any,
-    }));
-    changeTask(updateTasks);
+    changeTask(tasks);
+    changeMarkdownPage(
+      [
+        pageTitle,
+        operateTip,
+        tasks.map((itm) => itm.taskDescMarkdown).join("\n"),
+      ].join("\n"),
+    );
+  };
+
+  useEffect(() => {
+    void getAllUpdateList();
+  }, []);
+
+  const updateAllRepo = async () => {
+    if (pendingTask || !updateTasks.length) return;
+
+    const newPendingTask = Promise.all(updateTasks.map((itm) => itm.runner()));
+    changPendingTask(newPendingTask);
+    changeMarkdownPage([pageTitle, `Updating...`].join("\n"));
+    newPendingTask.then((res) => {
+      const successTask: string[] = [];
+      const failTask: { desc: string; errorMsg: string }[] = [];
+      res.forEach(({ success, msg }, index) => {
+        if (success) {
+          successTask.push(updateTasks[index].path);
+        } else {
+          const desc = updateTasks[index].taskDescMarkdown;
+          failTask.push({
+            desc,
+            errorMsg: msg,
+          });
+        }
+      });
+
+      const successStr = `> SUCCESS: ${successTask.join(", ")}`;
+      const failStr = failTask
+        .map((itm) => `${itm.desc}\n\n${itm.errorMsg}`)
+        .join("\n");
+      changPendingTask(null);
+      changeMarkdownPage(
+        [pageTitle, failStr, successStr].join("\n"),
+      );
+    });
   };
 
   return (
