@@ -1,4 +1,4 @@
-{
+import {
   Action,
   ActionPanel,
   closeMainWindow,
