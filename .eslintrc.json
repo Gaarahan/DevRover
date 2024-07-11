@@ -1,4 +1,12 @@
 {
   "root": true,
-  "extends": ["@raycast"]
+  "extends": ["@raycast"],
+  "overrides": [
+    {
+      "files": ["**/*.ts", "**/*.tsx"],
+      "rules": {
+        "@typescript-eslint/no-explicit-any": "off"
+      }
+    }
+  ]
 }
