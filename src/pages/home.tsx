@@ -16,7 +16,7 @@ import { ErrorType } from "./error";
 import { getConfig } from "./projectConfig";
 import { PageEnum } from "../dev_rover";
 
-const ProjectReg = /\/([\w\s-_]+)\/$/;
+const ProjectReg = /\/([\w\s-_\.]+)\/$/;
 
 interface IFormData {
   projectPath: string;
